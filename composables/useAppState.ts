@@ -2,7 +2,7 @@
 const showCreateSubredditSlideover = ref(false);
 
 
-export const useSubreddit = () => {
+export const useAppState = () => {
 
 
 

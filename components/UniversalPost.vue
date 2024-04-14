@@ -3,37 +3,33 @@
     <div class="flex items-center rounded-md my-2 border border-slate-700 hover:border-slate-500 bg-slate-700 cursor-default">
         
         <div class="rounded-l-md">
-            <div class="text-center w-[40px]">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
-                    stroke="currentColor" class="w-4 h-4 m-auto text-gray-400 hover:text-orange-500 cursor-pointer">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75" />
-                </svg>
-                <p class="text-xs m-1 text-gray-300">420</p>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
-                    stroke="currentColor" class="w-4 h-4 m-auto text-gray-400 hover:text-blue-500 cursor-pointer">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-                </svg>
+           <Voting :post="post" />
+        </div>
 
+        <div @click="goTo(`/subreddit/${post.subreddit_name}/${post.post_id}`)"
+         class="">
+            <div  class="w-[100px] h-16 rounded-md bg-gray-800 cursor-pointer" >
+
+                <img v-if="post_image_url && post.type=='image'" class="w-[100px] h-16 rounded-md" :src="post_image_url" alt="">
+                <p v-else class="text-xs h-full flex items-center justify-center  text-gray-500 text-center m-auto">
+                    <div>Text</div>
+                </p>
             </div>
         </div>
 
-        <div class="">
-            <div  class="w-[100px] h-16 rounded-md bg-gray-800" >
-                <!-- <img class="w-[100px] h-16 rounded-md" src="../assets/a55a96a32deb4b4b8b2028d1e98d3947.jpeg" alt=""> -->
-            </div>
-        </div>
-
-        <div class=" bg-slate-700 rounded-r-md">
+        <div @click="goTo(`/subreddit/${post.subreddit_name}/${post.post_id}`)" 
+            class=" bg-slate-700 w-full rounded-r-md">
             <!-- Post title -->
             <p class="text-md  mx-2 text-white font-semibold pr-6">{{ post.title }}</p>
             <!-- Subreddit name and post metadata -->
             <div class="flex items-center mx-2">
                 <!-- <img class="w-[16px] h-[16px] bg-white border border-gray-500 rounded-full" src="../assets/vue.svg"
                     alt="subreddit-image"> -->
-                <p class="text-sm text-white mr-2 hover:underline cursor-pointer">r/{{ post.subreddit.name }}</p>
-                <p class="text-xs text-gray-400 mr-2">Posted by <span
-                        class="hover:underline hover:text-orange-500 cursor-pointer">u/{{ post.user.username }}</span> </p>
+                <p  @click.prevent.stop="goTo(`/subreddit/${post.subreddit_name}`)"
+                    class="text-sm text-white mr-2 hover:underline cursor-pointer">r/{{ post.subreddit_name }}</p>
+                <p class="text-xs text-gray-400 mr-2">Posted by 
+                    <span @click.prevent.stop="goTo(`/profile/${post.username}/posts`)"
+                        class="hover:underline hover:text-orange-500 cursor-pointer">u/{{ post.username }}</span> </p>
                 <p class="text-xs text-gray-400">Posted at 11/11/2022</p>
             </div>
 
@@ -78,13 +74,23 @@
     </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import type { Post } from '~/types';
+
+const { getPostImageURL } = useApi();
+const router = useRouter();
 
 // define Props
-const {post} = defineProps(['post'])
+const {post} = defineProps<{
+    post: Post
+}>();
 
+const post_image_url = ref<string | null>(null);
+post_image_url.value = await getPostImageURL(post.content);
 
+const goTo = (path:string) => {
+    router.push(path);
+}
 
 
 </script>

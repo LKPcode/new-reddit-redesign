@@ -1,14 +1,15 @@
 <template>
       <p class="text-sm text-white pr-6">
-            {{ data || "Text is null or undefined" }}
+            {{ content }}
       </p>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
 // Define props
-const {data} = defineProps(["data"])
-
+const {content} = defineProps<{
+      content: string
+}>();
 
 </script>
 

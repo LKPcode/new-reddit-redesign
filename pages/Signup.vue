@@ -60,7 +60,8 @@ const signup = async () => {
     })
 
     if (error) {
-      toast.add( { title: 'Hello world!' } )
+      toast.add( { title:  error.message } )
+      console.error('SignUp Error:', error)
     } else {
       toast.add( { title: 'Sugn Up Successful!' } )
     }

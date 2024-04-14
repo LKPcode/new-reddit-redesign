@@ -2,10 +2,10 @@
           <!-- About Community -->
           <div class="bg-slate-700 rounded-md p-4 text-white">
             <div class="flex items-center ">
-                <img class="w-12 h-12 rounded-full border mr-4" src="../assets/75cce6fa16b14348860d4687049ed9d6.jpeg" alt="">
-                <h1 class=" font-medium text-gray-200">About r/ChatGPT</h1>
+                <img v-show="sub_image_url" class="w-12 h-12 rounded-full border mr-4" :src="sub_image_url" alt="">
+                <h1 class=" font-medium text-gray-200">About r/{{ subreddit.name }}</h1>
             </div>
-                <p class=" mt-2 text-sm">A subreddit dedicated to ChatGPT by OpenAI</p>
+                <p class=" mt-2 text-sm">{{ subreddit.description }}</p>
                 <div class="h-[1px] bg-gray-500 my-3"></div>
                 <div class="flex">
                     <div class="pr-4">
@@ -26,15 +26,27 @@
                 </div>
                 <div class="h-[1px] bg-gray-500 my-3"></div>
 
-                <button @click="goTo('/create-post/0')" class="bg-gray-100 hover:bg-gray-200 text-black w-full px-2 py-1 rounded-md font-medium">Create Post</button>
+                <NuxtLink :to="`/createpost/${subreddit.name}`">
+                    <button class="bg-gray-100 hover:bg-gray-200 text-black w-full px-2 py-1 rounded-md font-medium">Create Post</button>
+                </NuxtLink>
+
             </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Subreddit } from '~/types';
+
+const { getSubredditImageURL } = useApi()
+
+const {subreddit} = defineProps<{
+    subreddit: Subreddit
+}>()
+
+const sub_image_url = ref<string>("")
+
+// Get public URL of the Subreddit image
+sub_image_url.value = await getSubredditImageURL(subreddit.name) as string;
 
 
-const goTo = (path) => {
-
-}
 
 </script>

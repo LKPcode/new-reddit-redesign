@@ -1,76 +1,72 @@
-# Nuxt 3 Minimal Starter
+# Reddit Redesign and Implementation
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Description
 
-## Setup
+This project is a redesign and implementation of the popular social media platform Reddit. The project is a full-stack web application that allows users to create subreddits, post text/image posts, comment on posts, and upvote/downvote posts and comments. The project also includes user authentication and user profiles.
 
-Make sure to install the dependencies:
+The project is built using NuxtJS, a VueJS framework, and TailwindCSS for styling. The backend is built using Supabase, a Postgres database with a RESTful API.
 
+## Features
+
+- User Authentication
+- User Registration
+- User Profile
+- Subreddits
+- Text/image Posts
+- Nested Comments
+- Upvotes/Downvotes
+- User Settings
+
+## The Platform
+
+### Home Page with a minimalistic design
+![alt text](screenshots/main.png)
+
+### Subreddit Page
+
+![alt text](screenshots/camping.png)
+
+### Post Page with Nested Comments
+
+![alt text](screenshots/post.png)
+
+![alt text](screenshots/comments.png)
+
+### User Profile Page (Posts)
+
+![alt text](screenshots/profile_post.png)
+
+### User Profile Page (Comments)
+
+![alt text](screenshots/profile_comm.png)
+
+### Subreddit Creation Page
+
+![alt text](screenshots/createsub.png)
+
+### Post Creation Page for Subreddit (WebDev)
+
+![alt text](screenshots/createpost.png)
+
+### Subreddit Page (Finance) 
+
+![alt text](screenshots/webdev.png)
+
+
+## Installation
+
+### NuxtJS
+
+1. Clone the repository
+2. Install dependencies
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
+3. Run the development server
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+### Supabase
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-# new-reddit-redesign
+Execute the .sql files in the  `supabase` folder to create the tables and functions in the database.

@@ -9,7 +9,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75" />
                 </svg>
-                <p class="text-xs m-1 text-gray-300">420</p>
+                <p class="text-xs m-1 text-gray-300">0</p>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
                     stroke="currentColor" class="w-4 h-4 m-auto text-gray-400 hover:text-blue-500 cursor-pointer">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
@@ -23,25 +23,24 @@
             <div class="h-full w-[2px] border  border-dashed m-auto"></div>
         </div>
 
-        <!-- <img class="w-24 h-16 rounded-md" src="../assets/a55a96a32deb4b4b8b2028d1e98d3947.jpeg" alt=""> -->
 
         <div class="flex-grow bg-slate-700 rounded-r-md">
 
             <!-- Subreddit name and post metadata -->
             <div class="flex items-center mx-2"> 
                 <p class="text-xs text-gray-400 ">Commented by
-                    <span class="hover:underline text-orange-500 cursor-pointer">u/{{ comment.user.username }}</span> </p>
+                    <span class="hover:underline text-orange-500 cursor-pointer">u/{{ comment.username }}</span> </p>
                 <!-- <img class="w-[16px] h-[16px] bg-white border border-gray-500 rounded-full" src="../assets/vue.svg"
                     alt="subreddit-image"> -->
 
                     <p class="text-xs text-gray-400 mx-1"> in </p>
-                <p class="text-sm text-white mr-2 hover:underline cursor-pointer"> r/{{ comment.post.subreddit.name }}</p>
+                <p class="text-sm text-white mr-2 hover:underline cursor-pointer"> r/{{ comment?.subreddit_name }}</p>
 
                 <p class="text-xs text-gray-400">Posted at 11/11/2022</p>
             </div>
 
             <!-- Post title -->
-            <p class="text-sm mx-2 text-white font-semibold pr-6">{{ comment.body }}</p>
+            <p class="text-sm mx-2 text-white font-semibold pr-6">{{ comment.content }}</p>
 
             <!-- Post buttons -->
             <div class="flex items pb-1 mx-2">
@@ -83,10 +82,12 @@
     </div>
 </template>
 
-<script setup>
-import { ref ,defineProps} from 'vue'
+<script setup lang="ts">
+import type { Comment } from '~/types'
 
-const {comment} = defineProps(['comment'])
+const { comment } = defineProps<{
+    comment: Comment
+}>()
 
 
 

@@ -1,3 +1,36 @@
+
+<script setup lang="ts">
+
+    import type { User } from '~/types';
+
+    const router = useRouter();
+    const route = useRoute();
+    const { getUser } = useApi();
+
+    const { showCreateSubredditSlideover } = useAppState()
+
+    const user = ref<User>();
+    const { data: user_ } = await useAsyncData('user', async () => {
+        try {
+            const user = await getUser(route.params.username as string);
+            return user;
+        } catch (e) {
+            console.error(e);
+        }
+        return null;
+    });
+    if (user_.value) {
+        user.value = user_.value;
+    }else{
+        throw createError({
+            statusCode: 404,
+            statusMessage: 'User Not Found'
+        })
+    }
+
+</script>
+
+
 <template>
     <!-- About Community -->
     <div class="bg-slate-700 relative rounded-md p-4 text-white">
@@ -8,7 +41,7 @@
 
          </div>
      
-          <p class=" mt-8 text-center text-xl font-bold">GeniusPrompter</p>
+          <p class=" mt-8 text-center text-xl font-bold">{{user?.username}}</p>
 
           <div class="h-[1px] bg-gray-500 my-3"></div>
 
@@ -35,22 +68,9 @@
           </div>
           <div class="h-[1px] bg-gray-500 my-3"></div>
 
-          
-          <button  class="bg-slate-800 hover:bg-slate-900 text-white w-full px-2 py-1 rounded-md font-medium">Edit Profile</button>
+          <button class="bg-slate-800 hover:bg-slate-900 text-white w-full px-2 py-1 rounded-md font-medium">Edit Profile</button>
           <button @click="showCreateSubredditSlideover=true" class="bg-gray-100 hover:bg-gray-200 text-black w-full px-2 py-1  mt-2 rounded-md font-medium">Create Community</button>
       
       </div>
 </template>
 
-
-<script setup>
-
-const router = useRouter();
-
-const { showCreateSubredditSlideover } = useSubreddit()
-
-const goTo = (path) => {
-    router.push(path);
-}
-
-</script>

@@ -2,41 +2,37 @@
     <!-- Post Card like a post on Reddit -->
     <div class="flex rounded-md border border-slate-700 hover:border-slate-500 cursor-default my-2">
         
-        <div class=" bg-slate-700 rounded-l-md">
-            <div class="text-center w-[40px] mt-3">
-                <svg @click="vote('up')" 
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="5"
-                    stroke="currentColor" class="w-4 h-4 m-auto text-gray-400 hover:text-orange-500 cursor-pointer">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75" />
-                </svg>
-                <p class="text-xs m-1 text-gray-300">420</p>
-                <svg @click="vote('down')"
-                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="5"
-                    stroke="currentColor" class="w-4 h-4 m-auto text-gray-400 hover:text-blue-500 cursor-pointer">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-                </svg>
-
-            </div>
+        <div class=" bg-slate-700 rounded-l-md pt-2">
+           <Voting :post="post" />
         </div>
 
-        <div @click="goTo(`/post/${props.post?.subreddit.id}/${props.post?.id}`)"
+        <div @click="goTo(`/subreddit/${post.subreddit_name}/${post.post_id}`)"
         class="flex-grow bg-slate-700 rounded-r-md">
             <!-- Subreddit name and post metadata -->
             <div class="flex items-center m-2">
-                <img class="w-[16px] h-[16px] bg-white border border-gray-500 rounded-full" src="../assets/vue.svg"
+                
+                <img class="w-[16px] h-[16px] bg-white border border-gray-500 rounded-full" :src="sub_image_url"
                     alt="subreddit-image">
-                <p @click.self.stop="goTo(`/r/${props.post?.subreddit.id}/${props.post.subreddit.name}`)"
-                  class="text-sm text-white mx-2 hover:underline cursor-pointer">r/{{ props.post?.subreddit.name }}</p>
-                <p class="text-xs text-gray-400 mr-2">Posted by <span
-                        class="hover:underline text-orange-500 cursor-pointer">u/{{props.post?.user.username}}</span> </p>
+
+                <p @click.self.stop="goTo(`/subreddit/${post.subreddit_name}`)"
+                  class="text-sm text-white mx-2 hover:underline cursor-pointer">r/ {{ props.post?.subreddit_name }}</p>
+
+
+                <p class="text-xs text-gray-400 mr-2">Posted by 
+                    <span @click.self.stop="goTo(`/profile/${post.username}`)" 
+                        class="hover:underline text-orange-500 cursor-pointer">
+                        u/{{props.post.username}}
+                    </span> 
+                </p>
+
                 <p class="text-xs text-gray-400">Posted at {{  }}</p>
             </div>
             <!-- Post title and content -->
             <div class="ml-2">
                 <p class="text-lg text-white font-semibold pr-6 mb-2">{{ props.post?.title || "Error" }}</p>
 
-                <Text :data="props.post?.body" />
+                <PostVariationsText v-if="props.post.type=='text'" :content="props.post.content" />
+                <PostVariationsImage v-else-if="props.post.type=='image'" :path="props.post.content" />
 
             </div>
             <!-- Post buttons -->
@@ -78,18 +74,39 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
-const props = defineProps(['post'])
 
-const goTo = (path) => {
+import type { Post } from '~/types'
 
+const { getSubredditImageURL } = useApi()
+
+const props = defineProps<{
+  post: Post
+}>()
+
+const post = ref<Post>(props.post)
+const sub_image_url = ref<string>("")
+
+// Get public URL of the Subreddit image
+const getImagePublicURL = async (subreddit_name: string) => {
+    try {
+        const url = await getSubredditImageURL(subreddit_name)
+        // console.log(url)
+        return url
+    } catch (e) {
+        console.error(e)
+    }
+    return null
 }
 
-const vote = async (voteType) => {
-   
+// Get the public URL of the subreddit image
+sub_image_url.value = await getImagePublicURL(post.value.subreddit_name) as string;
+
+
+const router = useRouter()
+const goTo = (path:string) => {
+    router.push(path)
 }
-
-
 
 </script>

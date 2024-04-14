@@ -31,7 +31,7 @@ const { isOverDropZone } = useDropZone(dropZoneRef, {
       'border-2 border-dashed border-slate-700': !isOverDropZone,
       'border-2 border-dashed border-orange-400': isOverDropZone,
     }"
-    class="w-full h-24 text-sm flex justify-center items-center rounded-md my-2 p-2 px-4 bg-slate-800  border-2 border-dashed border-slate-700 text-white" ref="dropZoneRef">
+    class="w-full h-24 text-sm flex justify-center items-center rounded-md my-2 p-2 px-4 bg-slate-800  text-white" ref="dropZoneRef">
    <div v-if="!isOverDropZone && selected_files.length==0" class="text-gray-300">
         Drag And Drop Image Here 
     </div>

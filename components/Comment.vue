@@ -2,7 +2,7 @@
 
     <div class="bg-slate-700 rounded-md ">
 
-        <div v-for="(comment, i ) in props.comments" :key="comment.id" class="flex mt-2">
+        <div v-for="(comment, i ) in props.comments" :key="comment.comment_id" class="flex mt-2">
             <!-- Left Side -->
             <div class=" bg-slate-700 rounded-l-md flex flex-col">
                 <div class="w-[30px] flex flex-col  flex-grow ml-1">
@@ -13,8 +13,8 @@
             <div class="flex-grow bg-slate-700 rounded-r-md">
                 <!-- Subreddit name and post metadata -->
                 <div class="flex items-center my-2">
-                    <p class="text-sm text-white mx-2 hover:underline cursor-pointer">u/{{ comment.user.username}}</p>
-                    <p class="text-xs text-gray-400">Commented at {{ new Date(comment.createdAt).toISOString().split('T')[0] }} </p>
+                    <p class="text-sm text-white mx-2 hover:underline cursor-pointer">u/{{ comment.username}}</p>
+                    <p class="text-xs text-gray-400">Commented at {{ new Date(comment.created_at as unknown as string).toISOString().split('T')[0] }} </p>
                 </div>
 
                 <div>
@@ -23,28 +23,14 @@
                     <div class="m-2">
                         <p class="text-sm text-white pr-8">
                             <!-- Dummy text content -->
-                            {{ comment.body }}
+                            {{ comment.content }}
                         </p>
                     </div>
                     <!-- Post buttons -->
                     <div class="flex items">
-                        <!-- Upvote -->
-                        <div class=" flex text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="5"
-                                stroke="currentColor"
-                                class="w-4 h-4 m-auto text-gray-400 hover:text-orange-500 cursor-pointer">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75" />
-                            </svg>
-                            <p class="text-xs m-1 text-gray-300">420</p>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="5"
-                                stroke="currentColor"
-                                class="w-4 h-4 m-auto text-gray-400 hover:text-blue-500 cursor-pointer">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-                            </svg>
 
-                        </div>
+                        <!-- Upvote -->
+                        <CommentVoting :comment="comment" />
 
 
                         <!-- Comment -->
@@ -80,7 +66,7 @@
                     <!-- Reply editor -->
                     <div v-if="showReplyEditor[i] == true" class="mt-4 mr-4">
                         <p class="text-gray-500 text-sm">Comment as <span
-                                class="hover:underline cursor-pointer text-orange-500">u/GeniusPrompter</span> </p>
+                                class="hover:underline cursor-pointer text-orange-500">u/{{user?.username}}</span> </p>
                         <div class="relative">
                             <textarea
                                 v-model="newComments[i]"
@@ -89,14 +75,14 @@
                                 placeholder="What are your thoughts?"></textarea>
 
                             <div class="flex justify-end absolute bottom-6 right-2">
-                                <button @click="createCommentHandler(comment.id,i)" class="bg-orange-400 text-white rounded-md px-3 py-1">Publish</button>
+                                <button @click="createCommentHandler(comment.comment_id as unknown as string ,i)" class="bg-orange-400 text-white rounded-md px-3 py-1">Publish</button>
                             </div>
                         </div>
                     </div>
 
 
                     <!-- Comment replies -->
-                    <Comment v-if="'replies' in comment && comment.replies.length > 0" :comments="comment.replies" />
+                    <Comment v-if=" comment.children && comment.children.length > 0" :comments="comment.children" />
 
                 </div>
 
@@ -114,25 +100,53 @@
 
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Comment } from '~/types';
+
+const { user } = useAppUser()
 
 
 // accept a comments prop
-const props = defineProps(['comments'])
+const props = defineProps<{
+    comments: Comment[]
+}>()
 
 const showReplyEditor = ref(Array(props.comments.length).fill(false))
 
 const newComments = ref(Array(props.comments.length).fill(''));
 
-const toggleReplyEditor = (i) => {
+const toggleReplyEditor = (i:number) => {
     showReplyEditor.value[i] = !showReplyEditor.value[i]
 }
 
 
-const createCommentHandler = (parentID,i) => {
-    
-}
+const route = useRoute()
+const { createComment } = useApi()
+const toast = useToast()
+const createCommentHandler = async (parent_id:string,i:number) => {
+    let newComment = newComments.value[i]
 
+    // if comment is empty
+    if (newComment.trim() === '') {
+        toast.add({title: "Comment cannot be empty"})
+        return;
+    }
+
+    let new_comment: Comment = {
+        content: newComment,
+        created_at: new Date(),
+        post_id: (route.params.post_id as unknown as number),
+        parent_comment_id: parent_id as unknown as number
+    }
+
+    try {
+        const comment = await createComment(new_comment, route.params.post_id as unknown as string);
+        toast.add({title: "Comment created"})
+    } catch (e) {
+        console.error(e)
+        toast.add({title: "Error creating comment"})
+    }
+}
 
 
 </script>

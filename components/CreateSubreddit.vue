@@ -1,15 +1,42 @@
-<script setup>
+<script setup lang="ts" >
 
-const { showCreateSubredditSlideover } = useSubreddit()
+import { routerKey } from 'vue-router';
+import type { Subreddit } from '~/types'
 
-const subreddit = ref({
+const { showCreateSubredditSlideover } = useAppState()
+const { createSubreddit, uploadSubredditImage } = useApi()
+const toast = useToast()
+const router = useRouter()
+
+
+
+const subreddit = ref<Subreddit>({
     name: '',
     description: '',
-    image: null,
+    image_url: null,
 })
 
-const setImage = (event) => {
-    subreddit.value.image = URL.createObjectURL(event);
+const showcase_image = ref<string | null>(null)
+const setImage = (event: File) => {
+    subreddit.value.image_url = event;
+    showcase_image.value = URL.createObjectURL(event);
+}
+
+const create = async () => {
+  try{
+    // Upload image
+    const image_path = await uploadSubredditImage( subreddit.value.name ,subreddit.value.image_url as File)
+    subreddit.value.image_url = image_path
+    // Create subreddit
+    await createSubreddit(subreddit.value)
+    showCreateSubredditSlideover.value = false
+    router.push("/subreddit/" + subreddit.value.name)
+    toast.add({ title: 'Subreddit created successfully' })
+  }catch(e){
+    // Notify user of error
+    toast.add({ title: 'There was a problem creating the subreddit, please try again' })
+    console.error(e)
+  }
 }
 
 </script>
@@ -59,7 +86,7 @@ const setImage = (event) => {
                          <!-- About Community -->
             <div class="bg-slate-700 rounded-md p-4 text-white">
             <div class="flex items-center ">
-                <img v-if="subreddit.image" class="w-12 h-12 rounded-full border mr-4" :src="subreddit.image" alt="">
+                <img v-if="showcase_image" class="w-12 h-12 rounded-full border mr-4" :src="(showcase_image as string)" alt="">
                 <!-- <div v-else class="w-12 h-12 rounded-full border mr-4 bg-slate-600" > </div> -->
                 <h1 v-if="subreddit.name" class=" font-medium text-gray-200">r/{{ subreddit.name }}</h1>
             </div>
@@ -68,7 +95,8 @@ const setImage = (event) => {
             </div>
 
 
-            <button  class="bg-orange-400 mt-auto block w-full text-slate-900 font-bold rounded-md px-3 py-1">Publish</button>
+            <button @click="create" 
+                    class="bg-orange-400 mt-auto block w-full text-slate-900 font-bold rounded-md px-3 py-1">Publish</button>
 
           </div>
                

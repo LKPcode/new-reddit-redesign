@@ -7,7 +7,7 @@
           :key="tab"
           :class="{ 'px-4 mt-2 font-medium test-sm': true, 'border-b-2': activeTab === tab }"
         >
-         <NuxtLink :to="`/profile/${tab.toLowerCase()}`"> {{ tab }} </NuxtLink>
+         <NuxtLink :to="`/profile/${route.params.username}/${tab.toLowerCase()}`"> {{ tab }} </NuxtLink>
         </div>
       </div>
     </div>

@@ -1,11 +1,12 @@
 <template>
-  <div ref="target" class="relative w-[250px]">
-    <button @click="toggleMenu"
+  <div 
+   ref="target" class="relative w-[250px]">
+    <button  @click="toggleMenu"
       class="relative flex items-center  border border-slate-700 hover:border-slate-500 px-2 py-1 text-left rounded-md text-white w-full">
       <img class="w-8 h-8 rounded-full border mr-4" src="../assets/75cce6fa16b14348860d4687049ed9d6.jpeg" alt="">
 
       <div class="ml-1 ">
-        <span class="text-sm block m-0 p-0">GeniusPromter</span>
+        <span class="text-sm block m-0 p-0">{{user.username}}</span>
         <span class="text-xs block p-0 m-0 text-gray-400">10.2 Karma</span>
       </div>
 
@@ -15,14 +16,14 @@
         <img class="w-8 h-8 rounded-full border mr-4" src="../assets/75cce6fa16b14348860d4687049ed9d6.jpeg" alt="">
 
         <div class="ml-1 ">
-          <span class="text-sm block m-0 p-0">GeniusPromter</span>
+          <span class="text-sm block m-0 p-0">{{user.username}}</span>
           <span class="text-xs block p-0 m-0 text-gray-400">10.2 Karma</span>
 
         </div>
 
       </button>
 
-      <NuxtLink to="/profile/posts" >
+      <NuxtLink  @click="toggleMenu" :to="`/profile/${user.username}/posts`" >
         <li class="flex px-3 py-1 hover:bg-slate-600 cursor-pointer text-white">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="w-6 h-6">
@@ -34,7 +35,7 @@
         </li>
       </NuxtLink>
 
-      <NuxtLink to="/profile/subscriptions" >
+      <NuxtLink  @click="toggleMenu" to="/profile/subscriptions" >
         <li @click="goTo('/profile/subscriptions')" class="flex px-3 py-1 hover:bg-slate-600 cursor-pointer text-white">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="w-6 h-6">
@@ -76,6 +77,10 @@
 
 
 const router = useRouter();
+const route = useRoute();
+const { user } = useAppUser();
+
+console.log("Route: ", route.path);
 
 // Define reactive state for menu
 const menuOpen = ref(false)

@@ -7,6 +7,14 @@ export default defineNuxtConfig({
 
   supabase: {
     redirect: false
+  },
+
+  imports: {
+    dirs: [
+      // https://nuxt.com/docs/guide/directory-structure/composables
+      // scan all modules within given directory (Scan nested directories)
+      'composables/**'
+    ]
   }
 
 })
