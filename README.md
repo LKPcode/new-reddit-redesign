@@ -4,7 +4,7 @@
 
 This project is a redesign and implementation of the popular social media platform Reddit. The project is a full-stack web application that allows users to create subreddits, post text/image posts, comment on posts, and upvote/downvote posts and comments. The project also includes user authentication and user profiles.
 
-The project is built using NuxtJS, a VueJS framework, and TailwindCSS for styling. The backend is built using Supabase, a Postgres database with a RESTful API.
+The project is built using NuxtJS/TypeScript, a VueJS framework, and TailwindCSS for styling. The backend is built using Supabase, a Postgres database with a RESTful API.
 
 ## Features
 
